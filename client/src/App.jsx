@@ -1,34 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
+import Auth from './components/Auth/Auth'
+import Dashboard from './components/Dashboard/Dashboard';
+import axios from 'axios';
+import Allposts from './components/Dashboard/Allposts';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      setIsLoggedIn(false)
+      console.log('no token')
+    } else {
+      console.log(token)
+      setIsLoggedIn(true)
+
+    }
+  }, []);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <Auth />
+              )
+            }
+          />
+
+        </Routes>
+        <Dashboard >
+          <Routes>
+
+            <Route
+              path="/dashboard"
+              element={
+                <Allposts />
+              }
+            />
+      
+
+
+          </Routes>
+        </Dashboard>
+      </Router>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

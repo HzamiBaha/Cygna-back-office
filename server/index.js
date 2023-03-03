@@ -18,6 +18,17 @@ mongoose.connect(process.env.DB_CONNECT,
 app.use(bodyParser.json())
 app.use(express.json());
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization , auth-token');
+    next();
+  });
+
+
+  app.use("/images", express.static('images'));
+  
+
 app.use('/api/user', authRoute);
 app.use('/api/posts' , postRoute);
 
